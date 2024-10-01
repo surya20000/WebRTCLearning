@@ -1,4 +1,21 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+export const userLoginWithGoogle = createAsyncThunk(
+  "user/Details",
+  async ({ clientID, credential }) => {
+    const res = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URI}/api/user/googleLogin`,
+      {
+        clientID,
+        credential,
+      }
+    );
+    console.log("res", res.data);
+
+    return res.data.user;
+  }
+);
 
 export const userSlice = createSlice({
   name: "user",
@@ -7,25 +24,20 @@ export const userSlice = createSlice({
     loading: false,
     error: "",
   },
-  reducers: {
-    startLoading: (state) => {
-      state.loading = true;
-    },
-    stopLoading: (state) => {
-      state.loading = false;
-    },
-    setUserProfileData: (state, action) => {
-      state.userProfileData = action.payload;
-      state.error = "";
-    },
-    setError: (state, action) => {
-      state.error = action.payload;
-      state.loading = false;
-    },
-    removeUserProfileData: (state) => {
-      state.userProfileData = "";
-      state.error = "";
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(userLoginWithGoogle.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(userLoginWithGoogle.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userProfileData = action.payload;
+      })
+      .addCase(userLoginWithGoogle.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
   },
 });
 
@@ -33,10 +45,4 @@ export const getUserProfileInfo = (state) => state.user.userProfileData;
 export const getLoadingState = (state) => state.user.loading;
 export const getError = (state) => state.user.error;
 
-export const {
-  removeUserProfileData,
-  startLoading,
-  stopLoading,
-  setUserProfileData,
-} = userSlice.actions;
 export default userSlice.reducer;
