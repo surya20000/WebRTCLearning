@@ -1,9 +1,9 @@
-import Form from "../components/pages/landingPageComponents/Form";
+import GoogleSignIn from "../components/pages/landingPageComponents/GoogleSignIn";
 
 const LandingPage = () => {
   return (
     <div>
-      <Form />
+      <GoogleSignIn />
     </div>
   );
 };
