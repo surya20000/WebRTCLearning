@@ -18,9 +18,25 @@ const userSchema = mongoose.Schema(
       type: String,
       default: "https://i.ibb.co/zR1ykQb/background-Temp.jpg",
     },
-    userSelectedCategory: {
+    userDescription: {
+      type: String,
+      default: "",
+    },
+    userAreaOfInterests: {
       type: [String],
       default: [],
+    },
+    friends: {
+      type: Number,
+      default: 0,
+    },
+    interactions: {
+      type: Number,
+      default: 0,
+    },
+    hearts: {
+      type: Number,
+      default: 0,
     },
   },
   {

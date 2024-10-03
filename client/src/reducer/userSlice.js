@@ -11,8 +11,18 @@ export const userLoginWithGoogle = createAsyncThunk(
         credential,
       }
     );
-    console.log("res", res.data);
+    return res.data.user;
+  }
+);
 
+export const updateUserProfileData = createAsyncThunk(
+  "user/updateProfile",
+  async ({ _id, form }) => {
+    const res = await axios.put(
+      `${import.meta.env.VITE_BACKEND_URI}/api/user/updateProfile/${_id}`,
+
+      form
+    );
     return res.data.user;
   }
 );
@@ -35,6 +45,18 @@ export const userSlice = createSlice({
         state.userProfileData = action.payload;
       })
       .addCase(userLoginWithGoogle.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+    builder
+      .addCase(updateUserProfileData.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateUserProfileData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userProfileData = action.payload;
+      })
+      .addCase(updateUserProfileData.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

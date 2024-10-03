@@ -1,9 +1,11 @@
-import GoogleSignIn from "../components/pages/landingPageComponents/GoogleSignIn";
+import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   return (
     <div>
-      <GoogleSignIn />
+      <Link to="/signIn">
+        <button>SignIn</button>
+      </Link>
     </div>
   );
 };
