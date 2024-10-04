@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { userLoginWithGoogle } from "../../../reducer/userSlice";
 import {
   getLoadingState,
-  getError,
+  // getError,
   getUserProfileInfo,
 } from "../../../reducer/userSlice";
 import Loader from "../../common/Loader";
@@ -15,8 +15,7 @@ const GoogleSignIn = () => {
   const navigate = useNavigate();
   const user = useSelector(getUserProfileInfo);
   const isLoading = useSelector(getLoadingState);
-  const googleError = useSelector(getError);
-  console.log(googleError);
+  // const googleError = useSelector(getError);
   useEffect(() => {
     user && navigate("/UserPage");
   }, [user, navigate]);

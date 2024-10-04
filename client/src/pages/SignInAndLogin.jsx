@@ -1,4 +1,4 @@
-import GoogleSignIn from "../components/pages/landingPageComponents/GoogleSignIn"
+import GoogleSignIn from "../components/pages/signInAndLoginPageComponents/GoogleSignIn"
 
 
 const SignInAndLogin = () => {

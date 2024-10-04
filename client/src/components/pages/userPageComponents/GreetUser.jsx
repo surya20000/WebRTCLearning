@@ -5,10 +5,13 @@ import {
   getLoadingState,
   getUserProfileInfo,
   updateUserProfileData,
+  getError,
 } from "../../../reducer/userSlice";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { FaHeart } from "react-icons/fa";
 import Loader from "../../common/Loader";
+import SuccessNotification from "../../common/SuccessNotification";
+import FailureNotification from "../../common/FailureNotification";
 
 const GreetUser = () => {
   const dispatch = useDispatch();
@@ -19,8 +22,12 @@ const GreetUser = () => {
   const [uploadButtonVisibility, setUploadButtonVisibility] = useState(false);
   const [imageUploadLoadingState, setImageUploadLoadingState] = useState(false);
   const [form, setFormData] = useState({});
-  console.log(form);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+  const [showFailureNotification, setShowFailureNotification] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const serverError = useSelector(getError);
 
   const interestsOptions = [
     "Cars",
@@ -58,11 +65,16 @@ const GreetUser = () => {
             setImageUploadLoadingState(false);
             setUploadButtonVisibility(true);
             setProfileImage(result.secure_url);
+            setShowSuccessNotification(true);
+            setSuccessMessage(null);
+            setSuccessMessage("Image Uploaded Successfully");
             setFormData({ ...form, ["profilePicUR"]: result.secure_url });
           });
       }
     } catch (error) {
       setImageUploadLoadingState(false);
+      setShowSuccessNotification(false);
+      setSuccessMessage(null);
       console.log("Error Uploading Image", error.message);
     }
   };
@@ -70,8 +82,6 @@ const GreetUser = () => {
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
-      console.log("image file ", selectedFile);
-
       handleImageUpload(selectedFile);
     }
   };
@@ -103,16 +113,36 @@ const GreetUser = () => {
       e.preventDefault();
       const _id = userInfo._id;
       dispatch(updateUserProfileData({ _id, form }));
+      setShowSuccessNotification(true);
+      setSuccessMessage(null);
+      setSuccessMessage("Profile Updated Successfully");
       setUploadButtonVisibility(false);
       setDropdownOpen(false);
     } catch (error) {
-      console.log(error);
+      setShowSuccessNotification(false);
+      setSuccessMessage(null);
+      setShowFailureNotification(true);
+      setErrorMessage(error.message);
     }
   };
   return (
     <div>
       {imageUploadLoadingState ? <Loader /> : ""}
       {isLoading ? <Loader /> : ""}
+      {showSuccessNotification ? (
+        <SuccessNotification message={successMessage} />
+      ) : (
+        ""
+      )}
+
+      {showFailureNotification ? (
+        <FailureNotification message={errorMessage} />
+      ) : (
+        ""
+      )}
+
+      {serverError && <FailureNotification message={serverError} />}
+
       {userInfo && (
         <>
           {/* Background section with image and overlay */}

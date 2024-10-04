@@ -29,6 +29,6 @@ export const handleGoogleLogin = async (req, res) => {
     }
     verify().catch(console.error);
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(500).send(error);
   }
 };
