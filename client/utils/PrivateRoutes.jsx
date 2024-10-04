@@ -4,9 +4,8 @@ import { getUserProfileInfo } from "../src/reducer/userSlice";
 
 const PrivateRoutes = () => {
   const currUser = useSelector(getUserProfileInfo);
-  console.log(currUser);
 
-  return <>{currUser ? <Outlet /> : <Navigate to="/" />}</>;
+  return <>{currUser ? <Outlet /> : <Navigate to="/signIn" />}</>;
 };
 
 export default PrivateRoutes;

@@ -30,9 +30,9 @@ export const updateUserProfileData = createAsyncThunk(
 export const userSlice = createSlice({
   name: "user",
   initialState: {
-    userProfileData: "",
+    userProfileData: null,
     loading: false,
-    error: "",
+    error: null,
   },
   reducers: {},
   extraReducers: (builder) => {

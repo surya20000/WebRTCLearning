@@ -1,13 +1,7 @@
-import { Link } from "react-router-dom";
+import Heading from "../components/pages/landingPageComponents/Heading";
 
 const LandingPage = () => {
-  return (
-    <div>
-      <Link to="/signIn">
-        <button>SignIn</button>
-      </Link>
-    </div>
-  );
+  return <Heading />;
 };
 
 export default LandingPage;

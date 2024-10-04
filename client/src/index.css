@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@keyframes slideInOut {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    10% {
+      transform: translateY(20%);
+      opacity: 1;
+    }
+    90% {
+      transform: translateY(20%);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+  }
+  
+  /* Tailwind config for applying animation */
+  .animate-slideInOut {
+    animation: slideInOut 4s ease-in-out forwards;
+  }
+  
