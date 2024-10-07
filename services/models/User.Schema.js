@@ -5,6 +5,7 @@ const userSchema = mongoose.Schema(
     name: {
       type: String,
       required: true,
+      trim: true,
     },
     profilePicURL: {
       type: String,
@@ -21,6 +22,7 @@ const userSchema = mongoose.Schema(
     userDescription: {
       type: String,
       default: "",
+      trim: true,
     },
     userAreaOfInterests: {
       type: [String],

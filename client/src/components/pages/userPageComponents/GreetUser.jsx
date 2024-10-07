@@ -68,7 +68,7 @@ const GreetUser = () => {
             setShowSuccessNotification(true);
             setSuccessMessage(null);
             setSuccessMessage("Image Uploaded Successfully");
-            setFormData({ ...form, ["profilePicUR"]: result.secure_url });
+            setFormData({ ...form, ["profilePicURL"]: result.secure_url });
           });
       }
     } catch (error) {
