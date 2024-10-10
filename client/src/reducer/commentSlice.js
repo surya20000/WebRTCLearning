@@ -19,7 +19,20 @@ export const fetchAllComments = createAsyncThunk(
   }
 );
 
-
+// export const likeComment = createAsyncThunk(
+//   "increment/CommentLike",
+//   async ({ id, userID, postID }) => {
+//     const currPostID = postID.id;
+//     const res = await axios.put(
+//       `${import.meta.env.VITE_BACKEND_URI}/api/comments/likeComment/${id}`,
+//       {
+//         userID,
+//         currPostID,
+//       }
+//     );
+//     return res.data.comments;
+//   }
+// );
 
 export const commentSlice = createSlice({
   name: "allComments",
@@ -55,6 +68,21 @@ export const commentSlice = createSlice({
       state.loading = false;
       state.error = action.error.message;
     });
+
+    //* increment comment cases
+    // builder.addCase(likeComment.pending, (state) => {
+    //   state.loading = true;
+    // });
+    // builder.addCase(likeComment.fulfilled, (state, action) => {
+    //   state.error = null;
+    //   state.loading = false;
+    //   state.allComments = action.payload;
+    // });
+    // builder.addCase(likeComment.rejected, (state, action) => {
+    //   state.error = action.error.message;
+    //   state.loading = false;
+    //   state.allComments = [];
+    // });
   },
 });
 

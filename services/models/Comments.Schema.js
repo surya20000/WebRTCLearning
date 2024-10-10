@@ -17,10 +17,10 @@ const commentSchema = mongoose.Schema(
       ref: "users",
       trim: true,
     },
-    likes: {
-      type: Number,
-      default: 0,
-    },
+    // likes: {
+    //   type: Number,
+    //   default: 0,
+    // },
   },
   {
     timestamps: true,

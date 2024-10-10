@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import Posts from "../../../models/Post.schema.js";
+import User from "../../../models/User.Schema.js";
 
 export const createPost = async (req, res) => {
   try {
@@ -45,17 +47,31 @@ export const getPost = async (req, res) => {
 export const likePost = async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.body.userID;
+    const type = "Post";
+
     const foundPost = await Posts.findByIdAndUpdate(
       { _id: id },
       { $inc: { likes: 1 } },
       { new: true }
     ).populate("createdBy");
+
     if (!foundPost) {
       res
         .status(204)
         .json({ message: "Invalid Request Or the Post is Not Present" });
       return;
     }
+
+    await User.findByIdAndUpdate(
+      { _id: userId },
+      {
+        $push: {
+          userLikedPostsAndComments: { itemId: id, itemType: type },
+        },
+      },
+      { new: true }
+    );
     res.status(200).json({ posts: foundPost });
   } catch (error) {
     console.log(error.message);

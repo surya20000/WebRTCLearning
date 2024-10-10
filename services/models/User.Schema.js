@@ -40,7 +40,20 @@ const userSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
+    userLikedPostsAndComments: [
+      {
+        itemId: {
+          type: mongoose.Schema.Types.ObjectId,
+        },
+        itemType: {
+          type: String,
+          enum: ["Post", "Comment"],
+          required: true,
+        },
+      },
+    ],
   },
+
   {
     timestamps: true,
   }

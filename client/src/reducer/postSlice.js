@@ -24,8 +24,13 @@ export const fetchAllPosts = createAsyncThunk("fetch/allPost", async () => {
 //* method to increment the like of a particular post
 export const incrementPostLike = createAsyncThunk(
   "increment/PostLike",
-  async ({ id }) => {
-    const res = await axios.put(`${import.meta.env.VITE_BACKEND_URI}/api/post/likePost/${id}`);
+  async ({ id, userID }) => {
+    const res = await axios.put(
+      `${import.meta.env.VITE_BACKEND_URI}/api/post/likePost/${id.id}`,
+      {
+        userID,
+      }
+    );
     return res.data.posts;
   }
 );

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   incrementPostLike,
@@ -19,6 +19,7 @@ import {
   fetchAllComments,
   getAllComments,
   getCommentsErrorMessage,
+  // likeComment,
 } from "../../../reducer/commentSlice";
 
 const DisplayPost = () => {
@@ -37,8 +38,28 @@ const DisplayPost = () => {
   const serverError = useSelector(getPostUploadingErrorMessage);
   const [formData, setFormData] = useState({});
   const [showCommentBox, setShowCommentBox] = useState(false);
+  const [activateLikePostMethod, setActivateLikePostMethod] = useState(null);
+  // const [activateLikeCommentMethod, setActivateLikeCommentMethod] =
+  useState(null);
+  // const userLikedComments = userInfo.userLikedPostsAndComments.filter(
+  //   (item) => item.itemType === "Comment"
+  // );
 
-  const handleFetchPost = useCallback(() => {
+  const handleShowComments = () => {
+    try {
+      setShowCommentBox((prevState) => !prevState);
+      dispatch(fetchAllComments(id));
+      setSuccessMessage("Comments Fetched Successfully");
+      setShowSuccessNotification(true);
+      setShowFailureNotification(false);
+    } catch (error) {
+      setShowSuccessNotification(false);
+      setShowFailureNotification(true);
+      setErrorMessage(error.message);
+    }
+  };
+
+  useEffect(() => {
     try {
       dispatch(fetchParticularPost(id));
       setShowSuccessNotification(true);
@@ -49,35 +70,7 @@ const DisplayPost = () => {
       setShowFailureNotification(true);
       setErrorMessage(error.message);
     }
-  }, [dispatch, id, setShowFailureNotification, setShowSuccessNotification]);
-
-  const handleFetchAllComments = useCallback(() => {
-    try {
-      dispatch(fetchAllComments(id));
-      setSuccessMessage("Comments Fetched Successfully");
-      setShowSuccessNotification(true);
-      setShowFailureNotification(false);
-    } catch (error) {
-      setShowSuccessNotification(false);
-      setShowFailureNotification(true);
-      setErrorMessage(error.message);
-    }
-  }, [dispatch, id, setShowFailureNotification, setShowSuccessNotification]);
-
-  const handleShowComments = () => {
-    try {
-      setShowCommentBox((prevState) => !prevState);
-      handleFetchAllComments();
-    } catch (error) {
-      setShowSuccessNotification(false);
-      setShowFailureNotification(true);
-      setErrorMessage(error.message);
-    }
-  };
-
-  useEffect(() => {
-    handleFetchPost();
-  }, [handleFetchPost]);
+  }, [dispatch, id]);
 
   useEffect(() => {
     if (post && userInfo) {
@@ -87,6 +80,32 @@ const DisplayPost = () => {
       });
     }
   }, [post, userInfo]);
+
+  useEffect(() => {
+    const hasLikedPost = userInfo.userLikedPostsAndComments.some(
+      (item) => item.itemId === id.id && item.itemType === "Post"
+    );
+
+    if (hasLikedPost) {
+      setActivateLikePostMethod(false);
+      return;
+    }
+    setActivateLikePostMethod(true);
+  }, [id, userInfo.userLikedPostsAndComments]);
+
+  // useEffect(() => {
+  //   if (showCommentBox && allComments.length > 0) {
+  //     const likedCommentIds = new Set(
+  //       userLikedComments.map((item) => item.itemId)
+  //     );
+
+  //     allComments.forEach((comment) => {
+  //       if (likedCommentIds.has(comment._id)) {
+  //         setActivateLikeCommentMethod(false);
+  //       }
+  //     });
+  //   }
+  // }, [showCommentBox, allComments, userLikedComments]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -108,15 +127,32 @@ const DisplayPost = () => {
   //* method to dispatch the increment like function
   const handlePostLike = () => {
     try {
-      dispatch(incrementPostLike(id));
+      dispatch(incrementPostLike({ id, userID: userInfo._id }));
       setSuccessMessage("Post Liked Successfully");
       setShowSuccessNotification(true);
+      setActivateLikePostMethod(false);
     } catch (error) {
       setShowSuccessNotification(false);
       setShowFailureNotification(true);
       setErrorMessage(error.message);
     }
   };
+
+  //* method to dispatch the comment like
+  // const handleCommentLike = (commentId) => {
+  //   try {
+  //     dispatch(
+  //       likeComment({ id: commentId, postID: id, userID: userInfo._id })
+  //     );
+  //     setSuccessMessage("Comment Liked Successfully");
+  //     setShowSuccessNotification(true);
+  //     setActivateLikeCommentMethod(false);
+  //   } catch (error) {
+  //     setShowSuccessNotification(false);
+  //     setShowFailureNotification(true);
+  //     setErrorMessage(error.message);
+  //   }
+  // };
 
   return (
     <div>
@@ -183,12 +219,20 @@ const DisplayPost = () => {
             <p className="dark:text-slate-200">{post.description}</p>
             <div className="py-4 ml-auto">
               <div
-                className="inline-flex items-center hover:cursor-pointer"
-                onClick={handlePostLike}
+                className={`inline-flex items-center hover:cursor-pointer ${
+                  activateLikePostMethod
+                    ? "text-rose-600 dark:text-rose-400"
+                    : "text-gray-500 dark:text-gray-300"
+                }`}
+                onClick={activateLikePostMethod ? handlePostLike : () => {}}
               >
                 <span className="mr-2">
                   <svg
-                    className="fill-rose-600 dark:fill-rose-400 w-[24px] h-[24px]"
+                    className={`fill-${
+                      activateLikePostMethod
+                        ? "gray-500 dark:fill-gray-300"
+                        : "rose-600 dark:fill-rose-400"
+                    } w-[24px] h-[24px]`}
                     viewBox="0 0 24 24"
                   >
                     <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"></path>
@@ -238,32 +282,50 @@ const DisplayPost = () => {
                 </span>
               </div>
               {/* Comment Section */}
-              {allComments.length > 0
-                ? allComments.map((comment) => {
-                    return (
-                      <div className="pt-6" key={comment._id}>
-                        <div className="media flex pb-4">
-                          <a className="mr-4" href="#">
-                            <img
-                              className="rounded-full max-w-none w-12 h-12"
-                              src={comment.userID.profilePicURL}
-                            />
-                          </a>
-                          <div className="media-body">
-                            <div>
-                              <p className="inline-block text-base font-bold mr-2">
-                                {comment.userID.name}
-                              </p>
-                              <span className="text-slate-500 dark:text-slate-300">
-                                25 minutes ago
-                              </span>
-                            </div>
-                            <p>{comment.comment}</p>
-                            <div className="mt-2 flex items-center">
+              {allComments.length > 0 ? (
+                allComments.map((comment) => {
+                  return (
+                    <div className="pt-6" key={comment._id}>
+                      <div className="media flex pb-4">
+                        <a className="mr-4" href="#">
+                          <img
+                            className="rounded-full max-w-none w-12 h-12"
+                            src={comment.userID.profilePicURL}
+                          />
+                        </a>
+                        <div className="media-body">
+                          <div>
+                            <p className="inline-block text-base font-bold mr-2">
+                              {comment.userID.name}
+                            </p>
+                            <span className="text-slate-500 dark:text-slate-300">
+                              25 minutes ago
+                            </span>
+                          </div>
+                          <p>{comment.comment}</p>
+                          {/* <div
+                              className="mt-2 flex items-center hover:cursor-pointer"
+                              onClick={() => {
+                                if (
+                                  activateLikeCommentMethod &&
+                                  !isLikedByUser
+                                ) {
+                                  console.log("func needs to be executed");
+
+                                  handleCommentLike(comment._id);
+                                } else {
+                                  console.log("nothing happened");
+                                }
+                              }}
+                            >
                               <p className="inline-flex items-center py-2 mr-3">
                                 <span className="mr-2">
                                   <svg
-                                    className="fill-rose-600 dark:fill-rose-400 w-[22px] h-[22px]"
+                                    className={`${
+                                      isLikedByUser
+                                        ? "fill-rose-600 dark:fill-rose-400"
+                                        : "fill-gray-400 dark:fill-gray-300"
+                                    } w-[22px] h-[22px]`}
                                     viewBox="0 0 24 24"
                                   >
                                     <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"></path>
@@ -273,14 +335,18 @@ const DisplayPost = () => {
                                   {comment.likes}
                                 </span>
                               </p>
-                            </div>
-                          </div>
+                            </div> */}
                         </div>
-                        <hr />
                       </div>
-                    );
-                  })
-                : ""}
+                      <hr />
+                    </div>
+                  );
+                })
+              ) : (
+                <p className="flex justify-center text-lg p-4">
+                  Be the First One to Comment Here!
+                </p>
+              )}
               <div className="w-full">
                 <button className="py-3 px-4 w-full block bg-slate-100 dark:bg-slate-700 text-center rounded-lg font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition ease-in-out delay-75">
                   Show more comments
