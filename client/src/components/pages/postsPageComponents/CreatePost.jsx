@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Loader from "../../common/Loader";
 import { getUserProfileInfo } from "../../../reducer/userSlice";
@@ -12,6 +13,7 @@ import FailureNotification from "../../common/FailureNotification";
 
 const CreatePost = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const postLoadingState = useSelector(getPostUploadingState);
   const userInfo = useSelector(getUserProfileInfo);
   const [formData, setFormData] = useState({ createdBy: userInfo._id });
@@ -70,8 +72,9 @@ const CreatePost = () => {
     e.preventDefault();
     try {
       dispatch(uploadNewPost(formData));
-      setShowSuccessNotification(true);
       setSuccessMessage("Post Uploaded Successfully");
+      setShowSuccessNotification(true);
+      navigate("/posts");
     } catch (error) {
       showFailureNotification(true);
       setErrorMessage(error.message);

@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 
-const FailureNotification = ({ message, onClose }) => {
+const FailureNotification = ({ message }) => {
   const [show, setShow] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setShow(false); // Hide the notification after 3 seconds
-      setTimeout(() => onClose(), 500); // Give time for exit animation before closing
     }, 3000);
     return () => clearTimeout(timer);
-  }, [onClose]);
+  }, []);
 
   return (
     show && (

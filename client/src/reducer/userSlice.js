@@ -36,6 +36,7 @@ export const userSlice = createSlice({
   },
   reducers: {},
   extraReducers: (builder) => {
+    //* user Login with google cases 
     builder
       .addCase(userLoginWithGoogle.pending, (state) => {
         state.loading = true;
@@ -48,6 +49,8 @@ export const userSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       });
+
+      //* update user Profile data
     builder
       .addCase(updateUserProfileData.pending, (state) => {
         state.loading = true;

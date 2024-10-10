@@ -10,6 +10,7 @@ import {
 import SuccessNotification from "../../common/SuccessNotification";
 import FailureNotification from "../../common/FailureNotification";
 import DisplayAllPosts from "./DisplayAllPosts";
+import Loader from "../../common/Loader";
 
 const Heading = () => {
   const dispatch = useDispatch();
@@ -54,6 +55,8 @@ const Heading = () => {
       )}
 
       {serverError && <FailureNotification message={serverError} />}
+
+      {loading ? <Loader /> : ""}
 
       <Link to="/createPost">
         <button>Create Post</button>

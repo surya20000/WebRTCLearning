@@ -49,7 +49,7 @@ const DisplayAllPosts = () => {
                           : 0}
                         %
                         <span className="text-gray-500 font-normal">
-                          ({blog.comments})
+                          ({blog.comments} Comments)
                         </span>
                       </p>
                     </div>
@@ -67,12 +67,21 @@ const DisplayAllPosts = () => {
                         />
                       </svg>
                       <span>{blog.likes}</span>
+                      <span className="mx-2 flex items-center">
+                        <svg
+                          className="fill-gray-200 dark:fill-gray-200 w-[24px] h-[24px]"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M12 4.5C7.305 4.5 3.319 7.301 1.5 12c1.819 4.699 5.805 7.5 10.5 7.5s8.681-2.801 10.5-7.5c-1.819-4.699-5.805-7.5-10.5-7.5zm0 12c-2.485 0-4.5-2.015-4.5-4.5S9.515 7.5 12 7.5s4.5 2.015 4.5 4.5-2.015 4.5-4.5 4.5zM12 10.5c-.828 0-1.5.672-1.5 1.5s.672 1.5 1.5 1.5 1.5-.672 1.5-1.5-.672-1.5-1.5-1.5z" />
+                        </svg>
+                      </span>
+                      <span className="text-md font-bold">{blog.views}</span>
                     </div>
                     <div className="bg-gray-200 px-3 py-1 rounded-full text-xs font-medium text-gray-800 hidden md:block">
                       {blog.createdBy.name}
                     </div>
                   </div>
-                  <h3 className="font-black text-gray-800 md:text-3xl text-xl">
+                  <h3 className="font-black text-gray-800 md:text-3xl text-xl hover:underline cursor-pointer">
                     {blog.heading}
                   </h3>
                   <p className="md:text-lg text-gray-500 text-base">
