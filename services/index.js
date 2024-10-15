@@ -15,6 +15,9 @@ const server = http.createServer(app);
 app.use(express.json());
 app.use(cors());
 
+app.get("/", (req, res) => {
+  res.send("hello from the server");
+});
 app.use("/api/user", userRoutes); //* path for all the user routes
 app.use("/api/post", postRoutes); //* path for all the comments routes
 app.use("/api/comments", commentRoutes); //* path for all the comment routes
@@ -23,13 +26,48 @@ serverConnection(); //* backend call to connect to the server
 
 const io = new Server(server, {
   cors: {
-    methods: "GET,POST",
+    methods: ["GET", "POST"],
     origin: "*",
   },
 });
 
 io.on("connection", (socket) => {
   console.log(`A user Connected ${socket.id}`);
+  socket.on("userJoinedRoom", (userInfo) => {
+    io.emit("userJoinedRoom", userInfo);
+  });
+
+  socket.on(
+    "showConnectionRequestToTheRemoteUser",
+    ({ offeredUserSocketId, remoteUserSocketId, userName }) => {
+      // Check if the socket exists
+      const remoteSocket = io.sockets.sockets.get(remoteUserSocketId);
+      if (remoteSocket) {
+        io.to(remoteUserSocketId).emit("receivedConnectionRequest", {
+          userName,
+          offeredUserSocketId,
+        });
+      } else {
+        console.log("Remote socket not found, cannot emit.");
+      }
+    }
+  );
+
+  socket.on("offer", ({ from, to, offer }) => {
+    io.to(to).emit("offer", { from, to, offer });
+  });
+
+  socket.on("answer", ({ from, to, answer }) => {
+    io.to(from).emit("answer", { from, to, answer });
+  });
+
+  socket.on("callDeclined", (offeredUserId) => {
+    io.to(offeredUserId).emit("callDeclined");
+  });
+
+  socket.on("icecandidate", ({ candidate, to }) => {
+    io.to(to).emit("icecandidate", { candidate });
+  });
 });
 
 server.listen(port, () => {

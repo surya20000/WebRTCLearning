@@ -2,7 +2,7 @@
 const Heading = () => {
   return (
     <div>
-      <h1>This is connect Page</h1>
+      <h1>This is connect Page lets create it</h1>
     </div>
   )
 }

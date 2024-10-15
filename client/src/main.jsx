@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import store from "./store";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { BrowserRouter } from "react-router-dom";
+import "./js/SocketConnection.js";
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>

@@ -1,20 +1,33 @@
-import { io } from "socket.io-client";
 import { createSlice } from "@reduxjs/toolkit";
-import store from "../store";
-
-const socket = io(import.meta.env.VITE_BACKEND_URI);
 
 const socketSlice = createSlice({
   name: "socket",
   initialState: {
     connected: false,
     connectionId: null,
+    connectWithParticularUser: null,
     error: null,
+    receivedRequestFromRemoteUser: {},
+    usersInTheRoom: [],
   },
   reducers: {
+    addUserInARoom: (state, action) => {
+      state.usersInTheRoom = [...state.usersInTheRoom, action.payload];
+    },
+    addRemoteUserId: (state, action) => {
+      state.connectWithParticularUser = action.payload;
+    },
+    addRemoteUserRequestName: (state, action) => {
+      //* adding the latest received request
+      state.receivedRequestFromRemoteUser = action.payload;
+    },
     connect: (state) => {
       state.connected = true;
       state.error = null;
+    },
+    removeUserNameFromRequest: (state) => {
+      //* removing user name from the request panel
+      state.receivedRequestFromRemoteUser = {};
     },
     disconnect: (state) => {
       state.connected = false;
@@ -30,27 +43,24 @@ const socketSlice = createSlice({
   },
 });
 
+export const getAllUsersInTheRoom = (state) => state.socket.usersInTheRoom;
 export const getConnectedState = (state) => state.socket.connected;
-export const getConnectionState = (state) => state.socket.connectionId;
+export const getConnectionID = (state) => state.socket.connectionId;
+export const getReceivedRequestFromRemoteUser = (state) =>
+  state.socket.receivedRequestFromRemoteUser;
 export const getSocketConnectionError = (state) => state.socket.error;
+export const getRemoteUserSocketID = (state) =>
+  state.socket.connectWithParticularUser;
 
-export const { connect, disconnect, setConnectionId, setError } =
-  socketSlice.actions;
+export const {
+  addUserInARoom,
+  addRemoteUserId,
+  addRemoteUserRequestName,
+  connect,
+  disconnect,
+  setConnectionId,
+  setError,
+  removeUserNameFromRequest,
+} = socketSlice.actions;
 
 export default socketSlice.reducer;
-
-socket.on("connect", () => {
-  console.log("Connected to Socket");
-  store.dispatch(connect());
-  store.dispatch(setConnectionId(socket.id));
-});
-
-socket.on("disconnect", () => {
-  console.log("Disconnected from Socket");
-  store.dispatch(disconnect());
-});
-
-socket.on("connect_error", (error) => {
-  console.error("Error connecting to Socket IO: ", error.message);
-  store.dispatch(setError(error.message));
-});
