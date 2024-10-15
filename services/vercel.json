@@ -5,8 +5,7 @@
         "src": "services/package.json",
         "use": "@vercel/node"
       }
-    ],
-    "routes": [
+    ],"routes": [
       {
         "src": "/(.*)",
         "dest": "services/index.js"
