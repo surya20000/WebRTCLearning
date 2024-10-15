@@ -4,7 +4,7 @@ import { backendURI } from "./constants.js";
 export const serverConnection = async () => {
 
   await mongoose
-    .connect(backendURI)
+    .connect(`${backendURI}/ace`)
     .then(() => {
       console.log("Connected to db");
     })
