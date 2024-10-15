@@ -15,6 +15,9 @@ const server = http.createServer(app);
 app.use(express.json());
 app.use(cors());
 
+app.get("/", (req, res) => {
+  res.send("hello from the server");
+});
 app.use("/api/user", userRoutes); //* path for all the user routes
 app.use("/api/post", postRoutes); //* path for all the comments routes
 app.use("/api/comments", commentRoutes); //* path for all the comment routes
@@ -65,7 +68,6 @@ io.on("connection", (socket) => {
   socket.on("icecandidate", ({ candidate, to }) => {
     io.to(to).emit("icecandidate", { candidate });
   });
-  
 });
 
 server.listen(port, () => {
