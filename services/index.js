@@ -27,7 +27,7 @@ serverConnection(); //* backend call to connect to the server
 
 const io = new Server(server, {
   cors: {
-    origin: "https://web-rtc-learning.vercel.app", // Your frontend URL
+    origin: "*", // Your frontend URL
     methods: ["GET", "POST"],
     credentials: true,
   },
