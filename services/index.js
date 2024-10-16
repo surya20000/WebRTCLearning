@@ -13,7 +13,14 @@ import commentRoutes from "./routes/Comments.Routes.js";
 const app = express();
 const server = http.createServer(app);
 app.use(express.json());
-app.use(cors());
+
+// CORS configuration
+const corsOptions = {
+  origin: "https://web-rtc-learning.vercel.app", // Your frontend URL
+  methods: ["GET", "POST"],
+  credentials: true, // If you need to send credentials
+};
+app.use(cors(corsOptions));
 
 app.get("/", (req, res) => {
   res.send("hello from the server");
@@ -26,8 +33,9 @@ serverConnection(); //* backend call to connect to the server
 
 const io = new Server(server, {
   cors: {
+    origin: "https://web-rtc-learning.vercel.app", // Your frontend URL
     methods: ["GET", "POST"],
-    origin: "*",
+    credentials: true,
   },
 });
 
@@ -40,7 +48,6 @@ io.on("connection", (socket) => {
   socket.on(
     "showConnectionRequestToTheRemoteUser",
     ({ offeredUserSocketId, remoteUserSocketId, userName }) => {
-      // Check if the socket exists
       const remoteSocket = io.sockets.sockets.get(remoteUserSocketId);
       if (remoteSocket) {
         io.to(remoteUserSocketId).emit("receivedConnectionRequest", {
