@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cors());
 
 app.get("/", (req, res) => {
-  res.send("hello from the server");
+  res.send("hello from the server :2");
 });
 app.use("/api/user", userRoutes); //* path for all the user routes
 app.use("/api/post", postRoutes); //* path for all the comments routes
