@@ -14,13 +14,7 @@ const app = express();
 const server = http.createServer(app);
 app.use(express.json());
 
-// CORS configuration
-const corsOptions = {
-  origin: "https://web-rtc-learning.vercel.app", // Your frontend URL
-  methods: ["GET", "POST"],
-  credentials: true, // If you need to send credentials
-};
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("hello from the server");
